@@ -1,0 +1,588 @@
+{
+  "schema_version": "2",
+  "headline": "Delivered vol doubled on both boards and the front subtractions split sides: BTC +2.0, ETH -3.9 - and the payroll-dated expiry fell out of every tenor-scoped bucket",
+  "as_of": {
+    "btc_spot": {
+      "value": 78959.72,
+      "status": "observed",
+      "source_field": "BTC.metadata.spot_price",
+      "tier": "B",
+      "method": null,
+      "note": null
+    },
+    "eth_spot": {
+      "value": 2478.81,
+      "status": "observed",
+      "source_field": "ETH.metadata.spot_price",
+      "tier": "B",
+      "method": null,
+      "note": null
+    }
+  },
+  "events": [
+    {
+      "id": "deribit:BTC:2026-09-01",
+      "ts_utc": "2026-09-01T08:00:00Z",
+      "name": "BTC Deribit expiry 2026-09-01 (daily)",
+      "category": "crypto_expiry",
+      "importance": "high",
+      "assets_affected": [
+        "BTC"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The contract every BTC 0-1DTE reading in this brief describes at the run anchor. 2872.6 traded contracts on 1130 prints across 23 strikes, with 735 put prints against 395 call prints - the heaviest near-dated BTC size inside the horizon. Flow signs -255.8 net and the wings oppose: calls +149.7, puts -405.5. The nearest-expiry concentrations bracket spot at 77000 below (2.5% under) and 81000 above (2.6% over), while the rolling perp envelope has already covered 77024 to 79273. Composition in this scope is the change: the near-money open-interest ratio reads 1.676, up 89.2% in one session and the highest reading anywhere in this run.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:BTC:2026-09-01"
+      },
+      "new_since_previous": true,
+      "caveats": [
+        "Taker-signed size is a flow proxy over a rolling ~25h window; the maker-short reading is an assumption about who was resting, not a counterparty measurement."
+      ],
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:ETH:2026-09-01",
+      "ts_utc": "2026-09-01T08:00:00Z",
+      "name": "ETH Deribit expiry 2026-09-01 (daily)",
+      "category": "crypto_expiry",
+      "importance": "high",
+      "assets_affected": [
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The ETH side of the same front scope. 15482.0 traded contracts on 1141 prints across 28 strikes. Flow signs +1484.0 and it is almost entirely one wing: puts +1483.0 against calls +1.0. The nearest-expiry frame is unusually tight around the market - the put concentration at 2420 sits 2.4% under spot and the call concentration at 2480 sits 0.05% over, so spot 2478.81 is effectively on the upper leg. The front near-money ratio eased to 1.113, down 7.3%.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:ETH:2026-09-01"
+      },
+      "new_since_previous": true,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "bea:2026-09-03:u-s-international-trade-in-goods-and-ser",
+      "ts_utc": "2026-09-03T12:30:00Z",
+      "name": "U.S. International Trade in Goods and Services, July 2026",
+      "category": "macro",
+      "importance": "medium",
+      "assets_affected": [
+        "BTC",
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The only Tier A item inside the seven-day horizon with a published clock time - 12:30 UTC - and the only one this brief can order against a settlement hour. Both boards carry a daily expiry settling 08:00 UTC on that date, so those two contracts settle before the release rather than across it: a contract settling at that hour on that date does not pick this release up. Medium importance. The flow at that date is worth naming for a different reason - BTC's 2026-09-03 line carries the smallest traded size of any near BTC date at 522.1 contracts yet the largest positive net sign among BTC's four dates inside the horizon at +335.9, of which puts are +319.6.",
+      "ref": {
+        "tier": "A",
+        "source_id": "bea",
+        "item_id": "bea:2026-09-03:u-s-international-trade-in-goods-and-ser"
+      },
+      "new_since_previous": false,
+      "ts_precision": "exact",
+      "ts_basis": "published_release_time_et"
+    },
+    {
+      "id": "deribit:ETH:2026-09-03",
+      "ts_utc": "2026-09-03T08:00:00Z",
+      "name": "ETH Deribit expiry 2026-09-03 (daily)",
+      "category": "crypto_expiry",
+      "importance": "medium",
+      "assets_affected": [
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "5440.0 traded contracts on only 245 prints across 25 strikes - the fewest prints of any ETH date inside the horizon. Flow signs +1002.0 net, with calls +1279.0 and puts -277.0. At 3 days it sits in the gap between the 0-1DTE bucket and the 5-12 day window, so no tenor-scoped implied figure covers it.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:ETH:2026-09-03"
+      },
+      "new_since_previous": true,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "fred:50:2026-09-04",
+      "ts_utc": "2026-09-04T23:59:59Z",
+      "name": "Employment Situation (Nonfarm Payrolls)",
+      "category": "macro",
+      "importance": "high",
+      "assets_affected": [
+        "BTC",
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The high-importance release at the edge of the horizon, and this run it has lost its scope-matched vol reference. Both boards carry an expiry on 2026-09-04 and it now carries days_to_expiry 4, which falls between the 0-1DTE bucket and the 5-12 day window - so no TENOR-SCOPED implied figure and no tenor-scoped composition reading covers a strike written to that date. The pooled residual may contain that expiry, but it states no tenor and mixes it with expiries months out, so it is not a 4-day mark. The 5-12 day window instead now covers the 11-day date. Size at 2026-09-04 is real: ETH 16039.0 traded contracts on 588 prints, BTC 2063.6 on 792. The assertable statement about the release stays conservative - a position spanning 2026-09-04 is best treated as spanning it. Caveat: the source publishes a date, not a time.",
+      "ref": {
+        "tier": "A",
+        "source_id": "fred",
+        "item_id": "fred:50:2026-09-04"
+      },
+      "new_since_previous": false,
+      "caveats": [
+        "A calendar date identifies possible exposure, not confirmed inclusion. Nothing in these inputs orders this release against any settlement hour.",
+        "Neither the 0-1DTE nor the 5-12 day bucket contains a 4-day expiry, so neither may be cited as this date's implied mark."
+      ],
+      "ts_precision": "date_only",
+      "ts_basis": "end_of_release_date_utc"
+    },
+    {
+      "id": "deribit:ETH:2026-09-04",
+      "ts_utc": "2026-09-04T08:00:00Z",
+      "name": "ETH Deribit expiry 2026-09-04 (weekly)",
+      "category": "crypto_expiry",
+      "importance": "high",
+      "assets_affected": [
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The heaviest near-dated ETH line in the window: 16039.0 traded contracts on only 588 prints across 27 strikes, with 402 put prints against 186 call prints. Flow signs -685.0 net, with calls -775.0 and puts +90.0. It is the only ETH date inside the horizon whose net sign is negative - every other one signs positive. At 4 days nothing tenor-scoped prices it.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:ETH:2026-09-04"
+      },
+      "new_since_previous": false,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:BTC:2026-09-04",
+      "ts_utc": "2026-09-04T08:00:00Z",
+      "name": "BTC Deribit expiry 2026-09-04 (weekly)",
+      "category": "crypto_expiry",
+      "importance": "medium",
+      "assets_affected": [
+        "BTC"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "2063.6 traded contracts on 792 prints across 31 strikes, the widest strike coverage of any BTC date inside the horizon. Flow nets to almost nothing at -30.8 because the wings offset: calls +154.9 against puts -185.7. Takers net bought calls and net sold puts into the date that carries the payroll release.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:BTC:2026-09-04"
+      },
+      "new_since_previous": false,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:BTC:2026-09-25",
+      "ts_utc": "2026-09-25T08:00:00Z",
+      "name": "BTC Deribit expiry 2026-09-25 (quarterly)",
+      "category": "crypto_expiry",
+      "importance": "high",
+      "assets_affected": [
+        "BTC"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The size mode of the entire BTC board and the standout of this run: 9860.4 traded contracts on 2273 prints across 49 strikes, against 2872.6 at the next-heaviest BTC date in the window. Yet the net is almost nothing - -9.0 - because the wings offset almost exactly, calls +410.3 against puts -419.3. That shape is two-sided churn or structure, not a directional lift. At 25 days the 20-40 day scope covers it: implied 35.2, near-money ratio 0.643, concentrations at 85000 and 70000.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:BTC:2026-09-25"
+      },
+      "new_since_previous": true,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:ETH:2026-09-25",
+      "ts_utc": "2026-09-25T08:00:00Z",
+      "name": "ETH Deribit expiry 2026-09-25 (quarterly)",
+      "category": "crypto_expiry",
+      "importance": "high",
+      "assets_affected": [
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The same quarterly date on the ETH board carries 15847.0 traded contracts on 821 prints and signs -5263.0, the largest negative taker-signed figure anywhere in this run, with both wings the same way: calls -2241.0, puts -3022.0. BTC's line at the same date nets to -9.0 because its wings cancel; ETH's does not cancel at all. At 25 days the 20-40 day scope covers it: implied 49.2, near-money ratio 0.840, concentrations at 3000 and 2100.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:ETH:2026-09-25"
+      },
+      "new_since_previous": true,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:ETH:2026-09-11",
+      "ts_utc": "2026-09-11T08:00:00Z",
+      "name": "ETH Deribit expiry 2026-09-11 (weekly)",
+      "category": "crypto_expiry",
+      "importance": "medium",
+      "assets_affected": [
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "The largest positive taker-signed figure in this run. 7731.0 traded contracts on only 240 prints across 18 strikes, signing +4657.0 with both wings positive - calls +2760.0 and puts +1897.0. Size per print at that ratio is consistent with block clips rather than churn. At 11 days it falls inside the 5-12 day scope, so implied 46.9, a near-money ratio of 1.207 and concentrations at 2200 and 2800 are the marks that cover it.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:ETH:2026-09-11"
+      },
+      "new_since_previous": false,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "deribit:BTC:2026-09-11",
+      "ts_utc": "2026-09-11T08:00:00Z",
+      "name": "BTC Deribit expiry 2026-09-11 (weekly)",
+      "category": "crypto_expiry",
+      "importance": "medium",
+      "assets_affected": [
+        "BTC"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "1398.5 traded contracts on 653 prints, signing +353.5 with both wings positive - calls +41.2, puts +312.3. It is the largest positive net at any BTC date beyond three days. At 11 days the 5-12 day scope covers it: implied 34.6, near-money ratio 1.081, concentrations at 73000 and 85000.",
+      "ref": {
+        "tier": "B",
+        "source_id": "deribit_local_cache",
+        "item_id": "deribit:BTC:2026-09-11"
+      },
+      "new_since_previous": false,
+      "ts_precision": "exact",
+      "ts_basis": "deribit_0800_utc_settlement"
+    },
+    {
+      "id": "fred:10:2026-09-11",
+      "ts_utc": "2026-09-11T23:59:59Z",
+      "name": "CPI (Consumer Price Index)",
+      "category": "macro",
+      "importance": "high",
+      "assets_affected": [
+        "BTC",
+        "ETH"
+      ],
+      "consensus": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a consensus for this release."
+      },
+      "prior": {
+        "value": null,
+        "status": "missing",
+        "source_field": null,
+        "tier": null,
+        "method": null,
+        "note": "No input supplies a prior for this release."
+      },
+      "thesis": "Outside the seven-day horizon and carried for a tenor reason rather than a macro one: 2026-09-11 is the date the 5-12 day bucket now reaches, so it is the nearest release for which a scope-matched implied figure and composition reading exist on both boards. It is also the date carrying each board's largest positive taker-signed figure. Nothing in these inputs links a flow print to a scheduled release, and the release publishes no clock time to be ahead of. A position spanning 2026-09-11 spans it. Caveat: the source publishes a date, not a time.",
+      "ref": {
+        "tier": "A",
+        "source_id": "fred",
+        "item_id": "fred:10:2026-09-11"
+      },
+      "new_since_previous": false,
+      "caveats": [
+        "Same-date is not ordering: no clock time is published for this release, so it may not be placed before or after the 08:00 UTC settlement."
+      ],
+      "ts_precision": "date_only",
+      "ts_basis": "end_of_release_date_utc"
+    }
+  ],
+  "run_meta": {
+    "run_id": "6af7ac817c79",
+    "report_date": "2026-08-31",
+    "generated_at": "2026-08-31T22:00:02Z",
+    "built_at": "2026-08-31T22:57:33Z",
+    "expected_next_run_at": "2026-09-01T22:00:02Z",
+    "hard_expiry_at": "2026-09-02T22:00:02Z",
+    "horizon_days": 7,
+    "generated_by": {
+      "model": "opus",
+      "tier": "primary"
+    },
+    "completeness_score": 1,
+    "skew_seconds": 340,
+    "sources": [
+      {
+        "source_id": "fred",
+        "tier": "A",
+        "ok": true,
+        "fetched_at": "2026-08-31T22:00:54Z",
+        "observed_age_seconds": null,
+        "max_age_seconds": null,
+        "item_count": 8,
+        "error": null,
+        "notes": [],
+        "subsources": {
+          "declared": true,
+          "unit": "fred_release",
+          "requested": 5,
+          "ok": 5,
+          "empty_ok": 0,
+          "failed": []
+        }
+      },
+      {
+        "source_id": "fomc",
+        "tier": "A",
+        "ok": true,
+        "fetched_at": "2026-08-31T22:00:54Z",
+        "observed_age_seconds": null,
+        "max_age_seconds": null,
+        "item_count": 1,
+        "error": null,
+        "notes": [],
+        "subsources": {
+          "declared": true,
+          "unit": "fomc_year_panel",
+          "requested": 2,
+          "ok": 2,
+          "empty_ok": 0,
+          "failed": []
+        }
+      },
+      {
+        "source_id": "bea",
+        "tier": "A",
+        "ok": true,
+        "fetched_at": "2026-08-31T22:00:55Z",
+        "observed_age_seconds": null,
+        "max_age_seconds": null,
+        "item_count": 6,
+        "error": null,
+        "notes": [],
+        "subsources": {
+          "declared": true,
+          "unit": "bea_schedule_page",
+          "requested": 1,
+          "ok": 1,
+          "empty_ok": 0,
+          "failed": []
+        }
+      },
+      {
+        "source_id": "thetanuts_option_analytics",
+        "tier": "B",
+        "ok": true,
+        "fetched_at": "2026-08-31T22:00:56Z",
+        "observed_age_seconds": 35,
+        "max_age_seconds": 1200,
+        "item_count": 2,
+        "error": null,
+        "notes": [],
+        "subsources": {
+          "declared": true,
+          "unit": "currency",
+          "requested": 2,
+          "ok": 2,
+          "empty_ok": 0,
+          "failed": []
+        }
+      },
+      {
+        "source_id": "deribit_local_cache",
+        "tier": "B",
+        "ok": true,
+        "fetched_at": "2026-08-31T22:00:58Z",
+        "observed_age_seconds": 288,
+        "max_age_seconds": 3600,
+        "item_count": 2,
+        "error": null,
+        "notes": [],
+        "subsources": {
+          "declared": true,
+          "unit": "currency",
+          "requested": 2,
+          "ok": 2,
+          "empty_ok": 0,
+          "failed": []
+        }
+      }
+    ],
+    "serper_credits": null,
+    "sentinels_detected": [],
+    "tier_b_caveats": [
+      "Every level carries a `method` written by the ANALYTICS FEED ITSELF, describing what was actually computed, and a `method_note` written by this generator describing what the number may be USED for. Both travel with the number. Describe a level in those words, never by what its name suggests - and never by a name the feed no longer publishes.",
+      "`feed_display_weight` is the feed's presentation ordering weight. It is NOT a statistical confidence, a probability, or a sample-size measure. Do not present it as one and do not rank levels by it as though it were.",
+      "SCOPE IS PART OF THE NUMBER. Each level's `method_note` states the tenor and window it measured: 0-1DTE, 5-12 days, 20-40 days, a residual bucket pooling every other expiry, or a 24h traded-activity window. A level may be cited ONLY for the scope it names. A 0-1DTE measurement cannot support a weekly strike choice, and the residual bucket's tenor is NOT STATED at all - it mixes the current-week expiry with expiries months out, so it may be called neither near-dated nor far-dated, however convenient either would be.",
+      "Several levels are OPEN-INTEREST PROXIES, and the feed says so in their `method`: an OI peak is where contracts are held, not a demonstrated price barrier. Do not write that a level will hold, cap, or support price. Likewise the delta-flow levels are FLOW, not open interest, and the premium-weighted strikes are traded activity, not positioning.",
+      "The level the feed used to call a \"Gamma Wall\" is now published as a peak OI IMBALANCE, and the feed's own method says NOT gamma, NOT dealer positioning. There is no computed gamma exposure and no dealer inventory model anywhere in these inputs. Never write that dealers are short or long gamma at any price.",
+      "An IV or put/call figure delivered as status:\"missing\" is MISSING: not zero, not average, not 'around 50'. The feed distinguishes two ways a number can be absent and so does this pipeline - a bucket with no samples (unmeasured) and a bucket with samples whose arithmetic has no answer (undefined). A value the feed reports with sample_count 0 is a fabrication by construction and is refused outright. Conversely a 50% IV or a 0.0 put/call ratio that arrives WITH samples is an ordinary reading and is published as observed - do not treat those particular numbers as suspect.",
+      "Put/call ratios are open-interest ratios computed by the analytics feed over a band of at most ten strikes each side of spot, not a whole-book market put/call ratio. The separate Deribit figures in tier_b_chain are TRADED SIZE over a ~25h window and contain no open interest at all. Do not mix the two, and do not describe traded size as open interest or as flow positioning.",
+      "The feed's freshness stamp is a PUSH time (when the fetcher uploaded), not an observation time. Treat `observed_age_seconds` as an upper bound on how recent the underlying market observation is.",
+      "Where this feed and the locally-derived Deribit trade-cache figures disagree, say so rather than picking one."
+    ]
+  },
+  "data_gaps": [
+    {
+      "field": "tier_a.fred",
+      "reason": "duplicate of a BEA row with an exact time: 2026-09-30 Gross Domestic Product; 2026-09-30 Personal Income and Outlays (PCE)"
+    }
+  ]
+}

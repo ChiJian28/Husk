@@ -3,7 +3,7 @@
 !.env.example
 node_modules/
 dist/
-coverage/
+/coverage/
 *.log
 .DS_Store
 

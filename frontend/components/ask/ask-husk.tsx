@@ -5,10 +5,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { HuskMascot, HuskPromptMark } from "@/components/brand/husk-mascot";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/input";
-import { PolicyCard } from "@/components/policy/policy-card";
-import { TxProgress } from "@/components/policy/tx-progress";
+import { AskQuoteTurn } from "@/components/ask/ask-quote-turn";
 import { ASK_STARTERS, useAskHuskChat } from "@/hooks/useAskHuskChat";
-import { useBrokerFees } from "@/hooks/useApi";
+import { ChatMessage, ChatPending } from "@/components/ask/chat-message";
 import { cn } from "@/lib/utils";
 import { useUi } from "@/stores/ui";
 
@@ -21,7 +20,6 @@ export function AskHusk({ variant = "page" }: AskHuskProps) {
   const setChatOpen = useUi((s) => s.setChatOpen);
   const { isConnected, draft, setDraft, messages, quote, plan, buyPhase, turn, buy, send } =
     useAskHuskChat();
-  const broker = useBrokerFees();
 
   if (isPanel) {
     return (
@@ -68,47 +66,24 @@ export function AskHusk({ variant = "page" }: AskHuskProps) {
                 </div>
               </div>
             ) : (
-              messages.map((m) => (
-                <article
-                  key={m.id}
-                  className={cn(
-                    "max-w-full rounded-card px-4 py-3 text-sm leading-relaxed",
-                    m.role === "user" ? "ml-auto bg-husk text-husk-fg" : "border border-line bg-canvas",
-                    m.refusal && "border-danger/40",
-                  )}
-                >
-                  {m.text}
-                </article>
-              ))
+              messages.map((m) =>
+                m.quoteId && quote?.id === m.quoteId ? (
+                  <AskQuoteTurn
+                    key={m.id}
+                    message={m}
+                    quote={quote}
+                    plan={plan}
+                    buyPhase={buyPhase}
+                    isConnected={isConnected}
+                    onSign={() => buy(quote.id)}
+                  />
+                ) : (
+                  <ChatMessage key={m.id} message={m} />
+                ),
+              )
             )}
 
-            {quote && messages.some((m) => m.quoteId === quote.id) ? (
-              <div className="space-y-4 rounded-card border border-line bg-canvas p-4">
-                <PolicyCard quote={quote} plan={plan} broker={broker.data} />
-                <TxProgress />
-                <Button
-                  disabled={
-                    !isConnected ||
-                    buyPhase === "planning" ||
-                    buyPhase === "signing" ||
-                    buyPhase === "verifying" ||
-                    buyPhase === "rfq_waiting" ||
-                    (!plan && buyPhase === "review")
-                  }
-                  onClick={() => buy(quote.id)}
-                >
-                  {buyPhase === "active"
-                    ? "Coverage active"
-                    : buyPhase === "planning" || (!plan && buyPhase === "review")
-                      ? "Encoding preview"
-                      : buyPhase === "signing"
-                        ? "Sign in wallet"
-                        : "Buy coverage"}
-                </Button>
-              </div>
-            ) : null}
-
-            {turn.isPending ? <p className="text-sm text-mute">Underwriting…</p> : null}
+            {turn.isPending ? <ChatPending /> : null}
           </div>
 
           <div className="shrink-0 border-t border-line px-5 py-4">
@@ -202,47 +177,24 @@ export function AskHusk({ variant = "page" }: AskHuskProps) {
               ))}
             </div>
           ) : (
-            messages.map((m) => (
-              <article
-                key={m.id}
-                className={cn(
-                  "max-w-[42rem] rounded-card px-4 py-3 text-sm leading-relaxed",
-                  m.role === "user" ? "ml-auto bg-husk text-husk-fg" : "bg-raised border border-line",
-                  m.refusal && "border-danger/40",
-                )}
-              >
-                {m.text}
-              </article>
-            ))
+            messages.map((m) =>
+              m.quoteId && quote?.id === m.quoteId ? (
+                <AskQuoteTurn
+                  key={m.id}
+                  message={m}
+                  quote={quote}
+                  plan={plan}
+                  buyPhase={buyPhase}
+                  isConnected={isConnected}
+                  onSign={() => buy(quote.id)}
+                />
+              ) : (
+                <ChatMessage key={m.id} message={m} />
+              ),
+            )
           )}
 
-          {quote && messages.some((m) => m.quoteId === quote.id) ? (
-            <div className="max-w-[42rem] rounded-card border border-line bg-raised p-4 space-y-4">
-              <PolicyCard quote={quote} plan={plan} broker={broker.data} />
-              <TxProgress />
-              <Button
-                disabled={
-                  !isConnected ||
-                  buyPhase === "planning" ||
-                  buyPhase === "signing" ||
-                  buyPhase === "verifying" ||
-                  buyPhase === "rfq_waiting" ||
-                  (!plan && buyPhase === "review")
-                }
-                onClick={() => buy(quote.id)}
-              >
-                {buyPhase === "active"
-                  ? "Coverage active"
-                  : buyPhase === "planning" || (!plan && buyPhase === "review")
-                    ? "Encoding preview"
-                    : buyPhase === "signing"
-                      ? "Sign in wallet"
-                      : "Buy coverage"}
-              </Button>
-            </div>
-          ) : null}
-
-          {turn.isPending ? <p className="text-sm text-mute">Underwriting…</p> : null}
+          {turn.isPending ? <ChatPending /> : null}
         </div>
 
         <form

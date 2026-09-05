@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { HuskMascot } from "@/components/brand/husk-mascot";
+import { HuskProtectionActiveMark } from "@/components/brand/husk-mascot";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -86,11 +86,7 @@ export function PositionsView() {
         <p className="text-[13px] text-mute">Policies</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight leading-[1.12]">Coverage book</h1>
         <div className="mt-8">
-          <HuskMascot
-            mood={paid ? "payout" : live?.status === "active" ? "active" : unpaid ? "error" : "normal"}
-            size={180}
-            className="mx-auto lg:mx-0"
-          />
+          <HuskProtectionActiveMark size={180} className="mx-auto lg:mx-0" />
         </div>
         <dl className="mt-8 space-y-3 text-sm">
           <div className="flex justify-between">
@@ -294,7 +290,7 @@ function Row({
   nextName?: string;
   onRenew?: () => void;
 }) {
-  const { settle } = useBuyCoverage();
+  const { settle, cancelRfq } = useBuyCoverage();
   const quoteId = row.quote_id ?? "";
   const watching = row.status === "rfq_open" || row.status === "awaiting_signature";
   const settleQ = useSettlePlan(row.id, watching);
@@ -358,6 +354,11 @@ function Row({
         {watching && settleQ.data?.settleCall && quoteId ? (
           <Button size="sm" onClick={() => settle(quoteId, settleQ.data!.settleCall!)}>
             Sign settle
+          </Button>
+        ) : null}
+        {watching ? (
+          <Button size="sm" variant="secondary" onClick={() => cancelRfq(row.id)}>
+            Cancel RFQ
           </Button>
         ) : null}
         {onRenew ? (

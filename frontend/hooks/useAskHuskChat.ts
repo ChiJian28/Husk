@@ -6,6 +6,8 @@ import { useAgentTurn } from "@/hooks/useApi";
 import { useBuyCoverage } from "@/hooks/useBuyCoverage";
 import { quoteHasOpenRfq } from "@/lib/coverage";
 import { ApiError } from "@/lib/errors";
+import { isOffTopicUtterance, OFF_TOPIC_REPLY } from "@/lib/ask-topic";
+import { formatAskQuoteSummary } from "@/lib/ask-quote-summary";
 import { useUi } from "@/stores/ui";
 
 export const ASK_STARTERS = [
@@ -35,6 +37,16 @@ export function useAskHuskChat() {
     setChatOpen(true);
     push({ id: crypto.randomUUID(), role: "user", text: utterance });
     setDraft("");
+    if (isOffTopicUtterance(utterance)) {
+      push({
+        id: crypto.randomUUID(),
+        role: "husk",
+        text: OFF_TOPIC_REPLY,
+        refusal: true,
+        offTopic: true,
+      });
+      return;
+    }
     try {
       const res = await turn.mutateAsync({
         wallet: address,
@@ -56,7 +68,7 @@ export function useAskHuskChat() {
         push({
           id: crypto.randomUUID(),
           role: "husk",
-          text: res.userSentence ?? res.quote.copy.userSentence,
+          text: formatAskQuoteSummary(res.quote),
           quoteId: res.quote.id,
         });
         if (res.clarify && quoteHasOpenRfq(res.quote)) return;

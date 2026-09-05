@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ChatCircleDots, House, Stack } from "@phosphor-icons/react";
+import { House, Stack } from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { HuskMark, HuskPromptMark } from "@/components/brand/husk-mascot";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { WalletButton } from "@/components/layout/wallet-button";
 import { Button } from "@/components/ui/button";
 import { useHealth } from "@/hooks/useApi";
@@ -13,11 +14,10 @@ import { useUi } from "@/stores/ui";
 
 const NAV = [
   { href: "/", label: "Home", icon: House },
-  { href: "/ask", label: "Ask Husk", icon: ChatCircleDots },
   { href: "/positions", label: "Positions", icon: Stack },
-];
+] as const;
 
-const DESKTOP_NAV = NAV.filter((item) => item.href !== "/ask");
+const DESKTOP_NAV = NAV;
 
 export function DesktopTopNav() {
   const pathname = usePathname();
@@ -120,32 +120,4 @@ export function MobileTopBar() {
   );
 }
 
-export function MobileNav() {
-  const pathname = usePathname();
-  return (
-    <nav className="fixed inset-x-0 bottom-0 z-nav border-t border-line bg-raised/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
-      <ul className="grid grid-cols-3 items-end px-2 pt-1.5">
-        {NAV.map((item) => {
-          const active = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <li key={item.href} className="flex justify-center">
-              <Link
-                href={item.href}
-                className={cn(
-                  "flex min-w-[4.5rem] flex-col items-center gap-0.5 pb-2 pt-1 text-[11px]",
-                  active ? "text-husk" : "text-mute",
-                )}
-              >
-                <span className="flex size-8 items-center justify-center">
-                  <Icon weight={active ? "fill" : "regular"} className="size-[18px]" />
-                </span>
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
-  );
-}
+export { MobileNav } from "@/components/layout/mobile-nav";

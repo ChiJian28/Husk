@@ -17,10 +17,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const setChatOpen = useUi((s) => s.setChatOpen);
 
   useEffect(() => {
-    if (pathname === "/ask" && typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches) {
-      setChatOpen(true);
-      router.replace("/");
-    }
+    if (pathname !== "/ask") return;
+    if (!window.matchMedia("(min-width: 1024px)").matches) return;
+    setChatOpen(true);
+    router.replace("/");
   }, [pathname, router, setChatOpen]);
 
   return (
@@ -34,8 +34,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <MobileTopBar />
               <main
                 className={cn(
-                  "relative flex-1",
-                  "pb-[5.75rem] lg:pb-[5.5rem]",
+                  "relative flex min-h-0 flex-1 flex-col",
+                  "pb-mobile-nav lg:pb-[5.5rem]",
                   chatOpen && "lg:pb-0",
                 )}
               >

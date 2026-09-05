@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
-import promptMascot from "@/assets/husk_mascot_prompt.jpeg";
+import hiMascot from "@/assets/husk_mascot_hi.png";
+import promptMascot from "@/assets/husk_mascot_prompt.png";
+import protectionActiveMascot from "@/assets/husk_mascot_protection_active.png";
 import { MASCOT, SPRING, type MascotMood } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +23,7 @@ export function HuskMascot({
   return (
     <motion.div
       layout
-      className={cn("relative overflow-hidden rounded-card bg-[#0a0a0c]", className)}
+      className={cn("relative shrink-0", className)}
       style={{ width: size, height: size }}
       animate={reduce || !priority ? undefined : { y: [0, -4, 0] }}
       transition={reduce ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
@@ -48,8 +50,54 @@ export function HuskMascot({
 
 export function HuskMark({ className }: { className?: string }) {
   return (
-    <span className={cn("relative inline-flex size-9 overflow-hidden rounded-full bg-[#0a0a0c]", className)}>
-      <Image src={MASCOT.normal} alt="Husk" fill className="object-cover object-top" sizes="36px" />
+    <span className={cn("relative inline-flex size-9 shrink-0", className)}>
+      <Image src={MASCOT.normal} alt="Husk" fill className="object-contain object-bottom" sizes="36px" />
+    </span>
+  );
+}
+
+export function HuskHiMark({
+  className,
+  size = 88,
+}: {
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <span
+      className={cn("relative inline-flex shrink-0", className)}
+      style={{ width: size, height: size }}
+    >
+      <Image
+        src={hiMascot}
+        alt="Husk"
+        fill
+        className="object-contain object-bottom"
+        sizes={`${size}px`}
+      />
+    </span>
+  );
+}
+
+export function HuskProtectionActiveMark({
+  className,
+  size = 180,
+}: {
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <span
+      className={cn("relative inline-flex shrink-0", className)}
+      style={{ width: size, height: size }}
+    >
+      <Image
+        src={protectionActiveMascot}
+        alt="Husk protection active"
+        fill
+        className="object-contain object-bottom"
+        sizes={`${size}px`}
+      />
     </span>
   );
 }
@@ -63,19 +111,18 @@ export function HuskPromptMark({
   size?: number;
   rounded?: "input" | "card" | "full";
 }) {
-  const radius =
-    rounded === "full" ? "rounded-full" : rounded === "card" ? "rounded-card" : "rounded-input";
+  void rounded;
 
   return (
     <span
-      className={cn("relative inline-flex shrink-0 overflow-hidden bg-[#0a0a0c]", radius, className)}
+      className={cn("relative inline-flex shrink-0", className)}
       style={{ width: size, height: size }}
     >
       <Image
         src={promptMascot}
         alt="Husk"
         fill
-        className="object-cover object-center"
+        className="object-contain object-bottom"
         sizes={`${size}px`}
       />
     </span>

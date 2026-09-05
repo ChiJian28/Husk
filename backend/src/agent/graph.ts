@@ -178,7 +178,7 @@ async function explainNode(s: typeof State.State): Promise<Partial<AgentState>> 
   const q = s.quote;
   let text = await invokeGemini(
     UNDERWRITER_SYSTEM,
-    `Write ≤3 sentences for the user. This is a QUOTE plus unsigned calldata — do not say the coverage is bought, filled, or secured. Include these strings VERBATIM: ${q.totalDebitUsdc} and ${q.maxPayoutUsdc}. Event=${q.event.name}. Route=${q.route}. Quote id=${q.id}. Settlement=Chainlink TWAP.`,
+    `Write ≤3 short sentences for the user in plain language. This is a QUOTE plus unsigned calldata — do not say the coverage is bought, filled, or secured. Do NOT mention quote ids, hex calldata, field names like totalDebitUsdc, or "review unsigned calldata". Include these dollar amounts naturally: ${q.totalDebitUsdc} USDC premium and up to ${q.maxPayoutUsdc} USDC payout. Event=${q.event.name}. Route=${q.route}. Settlement=Chainlink TWAP.`,
   );
   if (!text.includes(q.totalDebitUsdc) || !text.includes(q.maxPayoutUsdc)) {
     logger.warn('explain fallback: model omitted amounts');

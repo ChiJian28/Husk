@@ -47,6 +47,13 @@ describe('liveness probes', () => {
     expect(res.headers.get('access-control-allow-origin')).toBe('http://localhost:5173');
   });
 
+  it('GET /v1/brief rejects invalid wallet', async () => {
+    const res = await app.request('/v1/brief/not-a-wallet');
+    expect(res.status).toBe(400);
+    const body = (await res.json()) as { error: { code: string } };
+    expect(body.error.code).toBe('BAD_WALLET');
+  });
+
   it('JSON validation uses the standard error envelope', async () => {
     const res = await app.request('/v1/quotes', {
       method: 'POST',

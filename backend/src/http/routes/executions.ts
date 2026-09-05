@@ -35,7 +35,9 @@ export const executionRoutes = new Hono<AppVars>().post(
       next:
         v.kind === 'rfq_requested'
           ? `RFQ open as quotation ${v.quotationId}. Poll POST /v1/coverages/${persisted.coverageId}/settle-plan (or /v1/jobs/watch-rfqs) for early-settle calldata.`
-          : 'Coverage active.',
+          : v.kind === 'rfq_cancelled'
+            ? 'RFQ cancelled. USDC reserve returned to the wallet.'
+            : 'Coverage active.',
     });
   },
 );

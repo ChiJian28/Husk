@@ -32,6 +32,15 @@ export type FillVerifyOk =
       optionAddress: string;
       buyer: string;
       premiumUsdc: string;
+    }
+  | {
+      ok: true;
+      kind: 'rfq_cancelled';
+      route: 'RFQ';
+      quotationId: string;
+      buyer: string;
+      premiumUsdc: string;
+      optionAddress?: undefined;
     };
 
 export type FillVerifyResult = FillVerifyOk | { ok: false; reason: string };
@@ -62,6 +71,7 @@ export function decodeFillLogs(receipt: ReceiptLike, wallet: string, broker?: st
 
   let requested: Extract<FillVerifyOk, { kind: 'rfq_requested' }> | undefined;
   let settled: Extract<FillVerifyOk, { kind: 'rfq_settled' }> | undefined;
+  let cancelled: Extract<FillVerifyOk, { kind: 'rfq_cancelled' }> | undefined;
 
   for (const log of receipt.logs) {
     try {
@@ -116,6 +126,15 @@ export function decodeFillLogs(receipt: ReceiptLike, wallet: string, broker?: st
           buyer: taker,
           premiumUsdc: fromUsdc(reserve),
         };
+      } else if (parsed.name === 'QuotationCancelled') {
+        cancelled = {
+          ok: true,
+          kind: 'rfq_cancelled',
+          route: 'RFQ',
+          quotationId: (parsed.args.quotationId ?? parsed.args[0]).toString(),
+          buyer: taker,
+          premiumUsdc: '0',
+        };
       }
     } catch {
       /* not factory */
@@ -123,8 +142,9 @@ export function decodeFillLogs(receipt: ReceiptLike, wallet: string, broker?: st
   }
 
   if (settled) return settled;
+  if (cancelled) return cancelled;
   if (requested) return requested;
-  return { ok: false, reason: 'no OrderFilled / QuotationRequested / QuotationSettled log' };
+  return { ok: false, reason: 'no OrderFilled / QuotationRequested / QuotationSettled / QuotationCancelled log' };
 }
 
 export async function verifyFillOnChain(opts: {
@@ -135,7 +155,12 @@ export async function verifyFillOnChain(opts: {
   const receipt = await getProvider().getTransactionReceipt(opts.txHash);
   if (!receipt) return { ok: false, reason: 'transaction not found on chain' };
   const decoded = decodeFillLogs(receipt, opts.wallet, env.partnerBrokerAddress);
-  if (decoded.ok && decoded.kind !== 'rfq_requested' && opts.expectedOption) {
+  if (
+    decoded.ok &&
+    decoded.kind !== 'rfq_requested' &&
+    decoded.kind !== 'rfq_cancelled' &&
+    opts.expectedOption
+  ) {
     if (decoded.optionAddress !== opts.expectedOption.toLowerCase()) {
       return { ok: false, reason: 'option address mismatch' };
     }
@@ -143,7 +168,7 @@ export async function verifyFillOnChain(opts: {
   await insertFillVerification({
     tx_hash: opts.txHash.toLowerCase(),
     wallet: opts.wallet.toLowerCase(),
-    option_address: decoded.ok ? (decoded.optionAddress ?? null) : null,
+    option_address: decoded.ok && 'optionAddress' in decoded ? (decoded.optionAddress ?? null) : null,
     buyer_in_event: decoded.ok ? decoded.buyer : null,
     ok: decoded.ok,
     reason: decoded.ok ? decoded.kind : decoded.reason,

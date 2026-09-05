@@ -21,11 +21,13 @@ export { listCoverages, getCoverageById };
 
 function quoteStatusFor(kind: FillVerifyOk['kind']): QuoteStatus {
   if (kind === 'rfq_requested') return 'rfq_open';
+  if (kind === 'rfq_cancelled') return 'cancelled';
   return 'active';
 }
 
 function coverageStatusFor(kind: FillVerifyOk['kind']): QuoteStatus {
   if (kind === 'rfq_requested') return 'rfq_open';
+  if (kind === 'rfq_cancelled') return 'cancelled';
   return 'active';
 }
 
@@ -47,7 +49,7 @@ export async function persistVerifiedExecution(opts: {
   const patch = {
     status,
     route: v.route,
-    option_address: v.optionAddress ?? null,
+    option_address: 'optionAddress' in v ? (v.optionAddress ?? null) : null,
     quotation_id: v.quotationId ?? existing?.quotation_id ?? null,
     open_tx: existing?.open_tx ?? txHash,
     settle_tx: v.kind === 'rfq_settled' ? txHash : existing?.settle_tx ?? null,

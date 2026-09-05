@@ -14,6 +14,8 @@ export type WatchRfqResult = {
   offeror?: string;
   offerAmountUsdc?: string;
   rejectedAboveReserve?: { offeror: string; offerAmountUsdc: string }[];
+  offerEndUnix?: number;
+  quotationId?: string;
   error?: string;
 };
 
@@ -53,25 +55,32 @@ export async function watchOpenRfq(row: {
   const client = getReadClient();
   const quotationId = BigInt(row.quotation_id);
   let offerors: string[] = [];
+  let offerEndUnix: number | undefined;
   try {
     const rfqs = await client.api.getUserRfqs(row.wallet);
-    const match = rfqs.find((r) => r.id === row.quotation_id || r.id === quotationId.toString());
+    const match = rfqs.find((r) => r.id === row.quotation_id || r.id === quotationId.toString()) as
+      | { offers?: Record<string, unknown>; offerEndTimestamp?: number }
+      | undefined;
     if (match?.offers) offerors = Object.keys(match.offers);
+    if (match?.offerEndTimestamp) offerEndUnix = Number(match.offerEndTimestamp);
   } catch (e) {
     logger.warn({ err: e instanceof Error ? e.message : e }, 'getUserRfqs failed');
   }
   if (offerors.length === 0) {
     try {
+      // Alchemy free tier: eth_getLogs max 10-block span (inclusive).
       const currentBlock = await client.provider.getBlockNumber();
       const evs = await client.events.getOfferMadeEvents({
-        fromBlock: Math.max(0, currentBlock - 50),
+        fromBlock: Math.max(0, currentBlock - 9),
       });
       offerors = evs.filter((o) => o.quotationId === quotationId).map((o) => o.offeror);
     } catch (e) {
       logger.warn({ err: e instanceof Error ? e.message : e }, 'getOfferMadeEvents failed');
     }
   }
-  if (offerors.length === 0) return { offers: 0 };
+  if (offerors.length === 0) {
+    return { offers: 0, offerEndUnix, quotationId: row.quotation_id };
+  }
 
   const rejectedAboveReserve: { offeror: string; offerAmountUsdc: string }[] = [];
 
@@ -113,6 +122,8 @@ export async function watchOpenRfq(row: {
           offeror,
           offerAmountUsdc,
           rejectedAboveReserve,
+          offerEndUnix,
+          quotationId: row.quotation_id,
         };
       }
       const signer = getSignerClient().requireSigner();
@@ -130,6 +141,8 @@ export async function watchOpenRfq(row: {
         offeror,
         offerAmountUsdc,
         rejectedAboveReserve,
+        offerEndUnix,
+        quotationId: row.quotation_id,
       };
     } catch (e) {
       logger.warn({ err: e instanceof Error ? e.message : e, offeror }, 'RFQ offer decrypt/encode skipped');
@@ -139,6 +152,8 @@ export async function watchOpenRfq(row: {
   return {
     offers: offerors.length,
     rejectedAboveReserve,
+    offerEndUnix,
+    quotationId: row.quotation_id,
     error:
       rejectedAboveReserve.length === offerors.length
         ? 'OFFER_ABOVE_RESERVE: every decrypted offer exceeds the RFQ reserve'

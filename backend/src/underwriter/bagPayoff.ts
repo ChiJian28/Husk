@@ -2,6 +2,45 @@ import { payoutType, strikesForUtilsPayout } from '../thetanuts/strikes.js';
 import { fromUsdc, strikeToChain, toSize, utils } from '../thetanuts/decimals.js';
 import type { Structure } from '../types/policy.js';
 
+export type PayoffAtPriceOpts = {
+  price: number;
+  protectedAmount: number;
+  structure: Structure;
+  strikesUsd: number[];
+  numContractsHuman: string;
+  premiumUsd: number;
+};
+
+export type PayoffAtPrice = {
+  bagAloneUsd: string;
+  bagPlusPolicyUsd: string;
+  cushionUsd: string;
+};
+
+export function payoffAtPrice(opts: PayoffAtPriceOpts): PayoffAtPrice {
+  const u = utils();
+  const strikes = strikesForUtilsPayout(
+    opts.structure,
+    opts.strikesUsd.map((s) => strikeToChain(s)),
+  );
+  const n = toSize(opts.numContractsHuman);
+  const type = payoutType(opts.structure);
+  const bagAlone = opts.price * opts.protectedAmount;
+  const payout = u.calculatePayout({
+    type,
+    strikes,
+    settlementPrice: strikeToChain(opts.price),
+    numContracts: n,
+  });
+  const optionUsd = Number(fromUsdc(payout));
+  const bagPlus = bagAlone + optionUsd - opts.premiumUsd;
+  return {
+    bagAloneUsd: bagAlone.toFixed(2),
+    bagPlusPolicyUsd: bagPlus.toFixed(2),
+    cushionUsd: (bagPlus - bagAlone).toFixed(2),
+  };
+}
+
 export function bagPayoffSeries(opts: {
   spot: number;
   protectedAmount: number;
@@ -12,29 +51,14 @@ export function bagPayoffSeries(opts: {
   steps?: number;
 }): { price: string; bagAloneUsd: string; bagPlusPolicyUsd: string }[] {
   const steps = opts.steps ?? 40;
-  const u = utils();
-  const strikes = strikesForUtilsPayout(
-    opts.structure,
-    opts.strikesUsd.map((s) => strikeToChain(s)),
-  );
-  const n = toSize(opts.numContractsHuman);
-  const type = payoutType(opts.structure);
   const out = [];
   for (let i = 0; i <= steps; i++) {
     const price = opts.spot * (0.6 + (0.6 * i) / steps);
-    const bagAlone = price * opts.protectedAmount;
-    const payout = u.calculatePayout({
-      type,
-      strikes,
-      settlementPrice: strikeToChain(price),
-      numContracts: n,
-    });
-    const optionUsd = Number(fromUsdc(payout));
-    const bagPlus = bagAlone + optionUsd - opts.premiumUsd;
+    const pt = payoffAtPrice({ ...opts, price });
     out.push({
       price: price.toFixed(2),
-      bagAloneUsd: bagAlone.toFixed(2),
-      bagPlusPolicyUsd: bagPlus.toFixed(2),
+      bagAloneUsd: pt.bagAloneUsd,
+      bagPlusPolicyUsd: pt.bagPlusPolicyUsd,
     });
   }
   return out;

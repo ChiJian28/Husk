@@ -52,6 +52,14 @@ describe('decodeFillLogs', () => {
     expect(r.buyer).toBe(broker);
   });
 
+  it('parses QuotationCancelled into rfq_cancelled', () => {
+    const encoded = factory.encodeEventLog('QuotationCancelled', [124n]);
+    const r = decodeFillLogs({ from: wallet, status: 1, logs: [{ topics: encoded.topics, data: encoded.data }] }, wallet);
+    expect(r.ok).toBe(true);
+    if (!r.ok || r.kind !== 'rfq_cancelled') return;
+    expect(r.quotationId).toBe('124');
+  });
+
   it('rejects a receipt with neither book nor factory events', () => {
     const r = decodeFillLogs({ from: wallet, status: 1, logs: [] }, wallet);
     expect(r.ok).toBe(false);

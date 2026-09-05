@@ -23,6 +23,13 @@ export function formatUsdc(value: string | number | null | undefined) {
   return n >= 10 ? fmtUsd.format(n) : fmtUsdTight.format(n);
 }
 
+export function formatBriefGreeting(greeting: string) {
+  return greeting.replace(/0x[a-fA-F0-9]+/g, (match) => {
+    if (match.length <= 13) return match;
+    return `${match.slice(0, 6)}....${match.slice(-4)}`;
+  });
+}
+
 export function formatAsset(value: string, symbol: string) {
   const n = Number(value);
   if (!Number.isFinite(n)) return `${value} ${symbol}`;
@@ -50,9 +57,17 @@ export function formatUnix(unix: number) {
   return formatUtc(new Date(unix * 1000).toISOString());
 }
 
-export function countdownTo(iso: string) {
+export function shelfDaysUntil(iso: string, now = Date.now()): number | null {
   const target = new Date(iso).getTime();
-  const delta = target - Date.now();
+  const delta = target - now;
+  if (!Number.isFinite(target) || delta <= 0) return null;
+  const h = Math.floor(delta / 3_600_000);
+  return Math.floor(h / 24);
+}
+
+export function countdownTo(iso: string, now = Date.now()) {
+  const target = new Date(iso).getTime();
+  const delta = target - now;
   if (!Number.isFinite(target)) return "";
   if (delta <= 0) return "started";
   const h = Math.floor(delta / 3_600_000);

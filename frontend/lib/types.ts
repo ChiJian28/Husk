@@ -61,6 +61,27 @@ export type PayoffPoint = {
   bagPlusPolicyUsd: DecimalString;
 };
 
+export type StressPoint = {
+  drawdownPct: number;
+  priceUsd: DecimalString;
+  bagAloneUsd: DecimalString;
+  bagPlusPolicyUsd: DecimalString;
+  cushionUsd: DecimalString;
+};
+
+export type QuoteStressResponse = Ok<{
+  quoteId: string;
+  asset: Asset;
+  spot: PolicyQuote["spot"];
+  deductiblePct: number;
+  protectionActivatesBelowDrawdownPct: number;
+  protectedNotionalAsset: DecimalString;
+  totalDebitUsdc: DecimalString;
+  maxPayoutUsdc: DecimalString;
+  series: StressPoint[];
+  at?: StressPoint;
+}>;
+
 export type BookOrderRef = {
   nonce: string;
   maker: string;
@@ -189,6 +210,14 @@ export type FillVerification =
       optionAddress: string;
       buyer: string;
       premiumUsdc: DecimalString;
+    }
+  | {
+      ok: true;
+      kind: "rfq_cancelled";
+      route: "RFQ";
+      quotationId: string;
+      buyer: string;
+      premiumUsdc: DecimalString;
     };
 
 export type WatchRfqResult = {
@@ -198,6 +227,8 @@ export type WatchRfqResult = {
   offeror?: string;
   offerAmountUsdc?: DecimalString;
   rejectedAboveReserve?: { offeror: string; offerAmountUsdc: DecimalString }[];
+  offerEndUnix?: number;
+  quotationId?: string;
   error?: string;
 };
 
@@ -244,6 +275,18 @@ export type HoldingsResponse = Ok<{
     cbbtc: string;
     usdc: string;
   };
+}>;
+
+export type BriefResponse = Ok<{
+  wallet: Address;
+  kicker: string;
+  greeting: string;
+  summary: string;
+  source: "template" | "gemini";
+  rollingSoon: boolean;
+  nextEvent?: CalendarEvent;
+  liveStatus?: QuoteStatus;
+  calendar: CalendarFreshness;
 }>;
 
 export type QuoteBody = CoverageIntent;
@@ -295,6 +338,12 @@ export type VerifyResponse = Ok<{
 
 export type CoverageListResponse = Ok<{ coverages: CoverageRow[] }>;
 export type SettlePlanResponse = Ok<{ coverageId: string } & WatchRfqResult>;
+export type CancelPlanResponse = Ok<{
+  coverageId: string;
+  quoteId: string;
+  quotationId: string;
+  cancelCall: UnsignedCall;
+}>;
 
 export type BrokerFeesResponse =
   | Ok<{ configured: false; feeBps: 0; accumulatedUsdc: "0" }>

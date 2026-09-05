@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { CoverageIntent, ExecutionPlan, PolicyQuote, QuoteStatus, UnsignedCall } from "@/lib/types";
+import { DEFAULT_SHELF_FILTER, type ShelfFilter } from "@/lib/shelf-filter";
 
 export type BuyPhase =
   | "idle"
@@ -11,6 +12,7 @@ export type BuyPhase =
   | "rfq_waiting"
   | "settle_ready"
   | "active"
+  | "cancelled"
   | "error";
 
 export type ChatMsg = {
@@ -19,6 +21,7 @@ export type ChatMsg = {
   text: string;
   quoteId?: string;
   refusal?: boolean;
+  offTopic?: boolean;
 };
 
 type IntentKnobs = Pick<
@@ -44,6 +47,7 @@ type UiState = {
   messages: ChatMsg[];
   customOpen: boolean;
   chatOpen: boolean;
+  shelfFilter: ShelfFilter;
   setKnobs: (patch: Partial<IntentKnobs>) => void;
   selectEvent: (id: string | null) => void;
   setQuote: (quote: PolicyQuote | null, status?: QuoteStatus | null) => void;
@@ -63,6 +67,9 @@ type UiState = {
   pushMessage: (msg: ChatMsg) => void;
   setCustomOpen: (open: boolean) => void;
   setChatOpen: (open: boolean) => void;
+  setShelfFilter: (filter: ShelfFilter) => void;
+  resetShelfFilter: () => void;
+  showUrgentShelf: () => void;
 };
 
 export const useUi = create<UiState>((set) => ({
@@ -89,6 +96,7 @@ export const useUi = create<UiState>((set) => ({
   messages: [],
   customOpen: false,
   chatOpen: false,
+  shelfFilter: DEFAULT_SHELF_FILTER,
   setKnobs: (patch) => set((s) => ({ knobs: { ...s.knobs, ...patch } })),
   selectEvent: (id) => set({ selectedEventId: id }),
   setQuote: (quote, status = quote ? "quoted" : null) =>
@@ -123,4 +131,13 @@ export const useUi = create<UiState>((set) => ({
   pushMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
   setCustomOpen: (open) => set({ customOpen: open }),
   setChatOpen: (open) => set({ chatOpen: open }),
+  setShelfFilter: (filter) => set({ shelfFilter: filter, policyOpen: false }),
+  resetShelfFilter: () => set({ shelfFilter: DEFAULT_SHELF_FILTER }),
+  showUrgentShelf: () =>
+    set({
+      policyOpen: false,
+      selectedEventId: null,
+      customOpen: false,
+      shelfFilter: { coverage: "uncovered", timeWindow: "5d", importance: "all", category: "all" },
+    }),
 }));

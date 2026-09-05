@@ -9,8 +9,10 @@ export const qk = {
   health: ["health"] as const,
   calendar: ["calendar"] as const,
   holdings: (w?: string) => ["holdings", w?.toLowerCase()] as const,
+  brief: (w?: string) => ["brief", w?.toLowerCase()] as const,
   coverages: (w?: string) => ["coverages", w?.toLowerCase()] as const,
   quote: (id?: string) => ["quote", id] as const,
+  quoteStress: (id?: string) => ["quote-stress", id] as const,
   demoQuote: (eventId?: string) => ["demo-quote", eventId] as const,
   broker: ["broker"] as const,
   settle: (id?: string) => ["settle", id] as const,
@@ -41,6 +43,17 @@ export function useHoldings(wallet?: Address) {
   });
 }
 
+export function useBrief(wallet?: Address) {
+  return useQuery({
+    queryKey: qk.brief(wallet),
+    queryFn: () => huskApi.brief(wallet!),
+    enabled: !!wallet,
+    staleTime: 30_000,
+    refetchInterval: 600_000,
+    retry: 1,
+  });
+}
+
 export function useCoverages(wallet?: Address) {
   return useQuery({
     queryKey: qk.coverages(wallet),
@@ -60,6 +73,15 @@ export function useQuote(id?: string, refetchWhileOpen = false) {
     queryFn: () => huskApi.getQuote(id!),
     enabled: !!id,
     refetchInterval: refetchWhileOpen ? 45_000 : false,
+  });
+}
+
+export function useQuoteStress(quoteId?: string) {
+  return useQuery({
+    queryKey: qk.quoteStress(quoteId),
+    queryFn: () => huskApi.quoteStress(quoteId!),
+    enabled: !!quoteId,
+    staleTime: 5 * 60_000,
   });
 }
 
@@ -110,6 +132,7 @@ export function useCreateQuote() {
     mutationFn: (body: CoverageIntent) => huskApi.quote(body),
     onSuccess: (data) => {
       qc.setQueryData(qk.quote(data.quote.id), { ...data, status: "quoted" });
+      void qc.invalidateQueries({ queryKey: qk.brief(data.quote.intent.wallet) });
     },
   });
 }
@@ -126,6 +149,7 @@ export function useVerifyExecution() {
     mutationFn: (body: VerifyBody) => huskApi.verify(body),
     onSuccess: (_data, vars) => {
       void qc.invalidateQueries({ queryKey: qk.coverages(vars.wallet) });
+      void qc.invalidateQueries({ queryKey: qk.brief(vars.wallet) });
     },
   });
 }
@@ -164,6 +188,7 @@ export function useAgentAuto() {
     mutationFn: (body: AgentAutoBody) => huskApi.agentAuto(body),
     onSuccess: (_data, vars) => {
       void qc.invalidateQueries({ queryKey: qk.coverages(vars.wallet) });
+      void qc.invalidateQueries({ queryKey: qk.brief(vars.wallet) });
     },
   });
 }

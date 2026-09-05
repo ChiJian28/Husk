@@ -137,7 +137,7 @@ export function PolicyPanel() {
     <aside
       className={cn(
         "flex min-h-0 flex-col border-line bg-raised",
-        "fixed inset-0 z-overlay lg:static lg:z-auto lg:max-w-none lg:border-0",
+        "fixed inset-0 z-overlay lg:static lg:z-auto lg:h-full lg:max-w-none lg:overflow-hidden lg:border-0",
       )}
     >
       <div className="flex items-center justify-between border-b border-line px-5 py-4">
@@ -190,12 +190,20 @@ export function PolicyPanel() {
               <Button
                 size="lg"
                 className="w-full"
-                disabled={busy || refreshing || buyPhase === "rfq_waiting" || (!plan && buyPhase === "review")}
+                disabled={
+                  busy ||
+                  refreshing ||
+                  buyPhase === "rfq_waiting" ||
+                  buyPhase === "cancelled" ||
+                  (!plan && buyPhase === "review")
+                }
                 onClick={() => buy(quote.id)}
               >
                 {buyPhase === "active"
                   ? "Coverage active"
-                  : buyPhase === "planning" || (!plan && buyPhase === "review")
+                  : buyPhase === "cancelled"
+                    ? "RFQ cancelled"
+                    : buyPhase === "planning" || (!plan && buyPhase === "review")
                     ? "Encoding preview"
                     : buyPhase === "signing"
                       ? "Sign in wallet"

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { ThemeProvider, useTheme } from "next-themes";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Toaster } from "sonner";
 import { wagmiConfig } from "@/lib/wagmi";
 
@@ -26,9 +26,16 @@ const rkLight = lightTheme({
 
 function RainbowTheme({ children }: { children: ReactNode }) {
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  // Keep SSR + first client render on rkDark (defaultTheme) to avoid hydration mismatch.
+  const theme = mounted && resolvedTheme === "light" ? rkLight : rkDark;
+
   return (
     <RainbowKitProvider
-      theme={resolvedTheme === "light" ? rkLight : rkDark}
+      theme={theme}
       modalSize="compact"
       initialChain={8453}
       appInfo={{

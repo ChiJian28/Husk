@@ -8,6 +8,7 @@ import type {
   AgentTurnBody,
   AgentTurnResponse,
   BrokerFeesResponse,
+  BriefResponse,
   CalendarResponse,
   CoverageIntent,
   CoverageListResponse,
@@ -17,8 +18,10 @@ import type {
   PlanResponse,
   QuoteGetResponse,
   QuoteResponse,
+  QuoteStressResponse,
   ReadyHealthResponse,
   SettlePlanResponse,
+  CancelPlanResponse,
   VerifyBody,
   VerifyResponse,
 } from "@/lib/types";
@@ -59,8 +62,15 @@ export const huskApi = {
   createCustomEvent: async (body: CustomEventBody) =>
     (await api.post<CustomEventResponse>("/v1/calendar/custom", body)).data,
   holdings: async (wallet: Address) => (await api.get<HoldingsResponse>(`/v1/holdings/${wallet}`)).data,
+  brief: async (wallet: Address) => (await api.get<BriefResponse>(`/v1/brief/${wallet}`)).data,
   quote: async (body: CoverageIntent) => (await api.post<QuoteResponse>("/v1/quotes", body)).data,
   getQuote: async (id: string) => (await api.get<QuoteGetResponse>(`/v1/quotes/${id}`)).data,
+  quoteStress: async (id: string, drawdownPct?: number) =>
+    (
+      await api.get<QuoteStressResponse>(`/v1/quotes/${id}/stress`, {
+        params: drawdownPct !== undefined ? { drawdownPct } : undefined,
+      })
+    ).data,
   plan: async (id: string) => (await api.post<PlanResponse>(`/v1/quotes/${id}/plan`)).data,
   agentTurn: async (body: AgentTurnBody) => (await api.post<AgentTurnResponse>("/v1/agent/turn", body)).data,
   agentAuto: async (body: AgentAutoBody) => (await api.post<AgentAutoResponse>("/v1/agent/autonomous", body)).data,
@@ -68,5 +78,7 @@ export const huskApi = {
   coverages: async (wallet: Address) => (await api.get<CoverageListResponse>(`/v1/coverages/${wallet}`)).data,
   settlePlan: async (coverageId: string) =>
     (await api.post<SettlePlanResponse>(`/v1/coverages/${coverageId}/settle-plan`)).data,
+  cancelPlan: async (coverageId: string) =>
+    (await api.post<CancelPlanResponse>(`/v1/coverages/${coverageId}/cancel-plan`)).data,
   brokerFees: async () => (await api.get<BrokerFeesResponse>("/v1/fees/broker")).data,
 };

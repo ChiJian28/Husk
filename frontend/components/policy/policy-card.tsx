@@ -1,7 +1,7 @@
 "use client";
 
 import { memo } from "react";
-import { PayoffChart } from "@/components/policy/payoff-chart";
+import { StressSlider } from "@/components/policy/stress-slider";
 import { DryRunLog } from "@/components/policy/dry-run-log";
 import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +66,7 @@ export const PolicyCard = memo(function PolicyCard({
 
       {compact ? null : (
         <div className="rounded-card border border-line p-4">
-          <PayoffChart points={quote.payoff} />
+          <StressSlider quoteId={quote.id} asset={quote.intent.asset ?? "ETH"} />
         </div>
       )}
 
@@ -88,7 +88,7 @@ export const PolicyCard = memo(function PolicyCard({
 
       <AccordionRoot type="single" collapsible>
         <AccordionItem value="advanced">
-          <AccordionTrigger>Structure for judges</AccordionTrigger>
+          <AccordionTrigger>Structure</AccordionTrigger>
           <AccordionContent>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 font-mono text-xs">
               <dt className="text-mute">Structure</dt>

@@ -11,7 +11,7 @@ import {
   quoteHasOpenRfq,
 } from "@/lib/coverage";
 import { ApiError } from "@/lib/errors";
-import { weiToBigint } from "@/lib/tx";
+import { humanizeTxError, resolveTxGas, weiToBigint } from "@/lib/tx";
 import { useCoverages } from "@/hooks/useApi";
 import { useUi } from "@/stores/ui";
 import type { Address, ExecutionPlan, PolicyQuote, UnsignedCall } from "@/lib/types";
@@ -32,32 +32,49 @@ export function useBuyCoverage() {
 
   const sendCall = useCallback(
     async (call: UnsignedCall, index: number, total: number) => {
+      if (!publicClient) {
+        throw new Error("No Base RPC client. Cannot estimate gas or wait for the receipt.");
+      }
+      if (!address) {
+        throw new Error("Connect a Base wallet first.");
+      }
       setBuy({
         phase: "signing",
         error: null,
         signStep: { index, total, description: call.description },
       });
-      const hash = await sendTransactionAsync({
+      const request = {
+        account: address as Address,
         to: call.to,
         data: call.data,
         value: weiToBigint(call.value),
+      };
+      let estimated: bigint;
+      try {
+        estimated = await publicClient.estimateGas(request);
+      } catch (err) {
+        throw new Error(humanizeTxError(err));
+      }
+      const gas = resolveTxGas(estimated);
+      const hash = await sendTransactionAsync({
+        to: request.to,
+        data: request.data,
+        value: request.value,
         chainId: base.id,
+        gas,
       });
       setBuy({
         phase: "signing",
         lastTxHash: hash,
         signStep: { index, total, description: "Waiting for confirmation" },
       });
-      if (!publicClient) {
-        throw new Error("No Base RPC client. Cannot wait for the receipt.");
-      }
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
       if (receipt.status === "reverted") {
         throw new Error("Transaction reverted on Base.");
       }
       return hash;
     },
-    [publicClient, sendTransactionAsync, setBuy],
+    [address, publicClient, sendTransactionAsync, setBuy],
   );
 
   const ensureChain = useCallback(async () => {
@@ -234,8 +251,7 @@ export function useBuyCoverage() {
           });
           return;
         }
-        const message = err instanceof Error ? err.message : "Transaction failed";
-        setBuy({ phase: "error", error: message });
+        setBuy({ phase: "error", error: humanizeTxError(err) });
       }
     },
     [address, coverages, ensureChain, previewPlan, resumeOpenRfq, sendCall, setBuy],
@@ -254,19 +270,48 @@ export function useBuyCoverage() {
           wallet: address as Address,
         });
         setBuy({
-          phase: verified.status === "active" ? "active" : "rfq_waiting",
+          phase: verified.status === "active" ? "active" : verified.status === "cancelled" ? "cancelled" : "rfq_waiting",
           coverageId: verified.coverageId,
         });
         void coverages.refetch();
       } catch (err) {
         setBuy({
           phase: "error",
-          error: err instanceof Error ? err.message : "Settle failed",
+          error: humanizeTxError(err),
         });
       }
     },
     [address, coverages, ensureChain, sendCall, setBuy],
   );
 
-  return { buy, settle, previewPlan, resumeOpenRfq, resetBuy };
+  const cancelRfq = useCallback(
+    async (coverageId: string) => {
+      if (!address) return;
+      try {
+        await ensureChain();
+        const plan = await huskApi.cancelPlan(coverageId);
+        const hash = await sendCall(plan.cancelCall, 1, 1);
+        setBuy({ phase: "verifying", lastTxHash: hash });
+        const verified = await huskApi.verify({
+          txHash: hash,
+          quoteId: plan.quoteId,
+          wallet: address as Address,
+        });
+        setBuy({
+          phase: verified.status === "cancelled" ? "cancelled" : "error",
+          coverageId: verified.coverageId,
+          error: verified.status === "cancelled" ? null : "Cancel mined but was not recognized as QuotationCancelled.",
+        });
+        void coverages.refetch();
+      } catch (err) {
+        setBuy({
+          phase: "error",
+          error: humanizeTxError(err),
+        });
+      }
+    },
+    [address, coverages, ensureChain, sendCall, setBuy],
+  );
+
+  return { buy, settle, cancelRfq, previewPlan, resumeOpenRfq, resetBuy };
 }

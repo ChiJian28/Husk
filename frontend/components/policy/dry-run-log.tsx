@@ -24,7 +24,7 @@ export function DryRunLog({ dryRun }: { dryRun: Record<string, unknown> }) {
   return (
     <AccordionRoot type="single" collapsible>
       <AccordionItem value="dry-run">
-        <AccordionTrigger>Dry-run preview (judges)</AccordionTrigger>
+        <AccordionTrigger>Dry-run preview</AccordionTrigger>
         <AccordionContent>
           <dl className="grid grid-cols-1 gap-x-4 gap-y-1.5 font-mono text-xs sm:grid-cols-[minmax(8rem,14rem)_1fr]">
             {entries.map((row) => (
